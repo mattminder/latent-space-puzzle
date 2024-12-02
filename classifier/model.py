@@ -29,31 +29,31 @@ class AttentionOutput(torch.nn.Module):
 class NeuralNetwork(torch.nn.Module):
     """Implements a classifier with a single multihead attention layer."""
 
-    number_heads = 3
+    number_heads = 2
     number_classes = 2
     max_sequence_length = 5
+    n_hidden = 5
 
-    def __init__(self, n_hidden=5):
+    def __init__(self):
         super().__init__()
 
-        self.n_hidden = n_hidden
 
         # tokens 0-9: digits, 10: CLS
-        self.embedding = torch.nn.Embedding(11, n_hidden)
+        self.embedding = torch.nn.Embedding(11, self.n_hidden)
         
         self.attention_matrix_list = torch.nn.ModuleList(
             (
-                AttentionMatrix(n_hidden) for _ in range(self.number_heads)
+                AttentionMatrix(self.n_hidden) for _ in range(self.number_heads)
             )
         )
         self.attention_output_list = torch.nn.ModuleList(
             (
-                AttentionOutput(n_hidden) for _ in range(self.number_heads)
+                AttentionOutput(self.n_hidden) for _ in range(self.number_heads)
             )
         )
-        self.projection = torch.nn.Linear(self.number_heads * n_hidden, n_hidden)
+        self.projection = torch.nn.Linear(self.number_heads * self.n_hidden, self.n_hidden)
 
-        self.output = torch.nn.Linear(n_hidden * self.max_sequence_length, self.number_classes)
+        self.output = torch.nn.Linear(self.n_hidden * self.max_sequence_length, self.number_classes)
 
     def _get_logits_from_attention_matrices(self, embeddings, attention_matrices):
         attention_output = self._get_attention_output(embeddings, attention_matrices)
