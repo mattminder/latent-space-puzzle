@@ -78,10 +78,10 @@ class NeuralNetwork(torch.nn.Module):
             for att_layer in self.attention_matrix_list
         ]
 
-    def forward(self, tokens):
+    def forward(self, year):
         """Returns >0.8 if correct input was provided."""
         # first token is expected to be CLS
-        embeddings = self.embedding(tokens)
+        embeddings = self.embedding(year)
         
         attention_matrices = self.get_attention_matrices(embeddings)
         logits = self._get_logits_from_attention_matrices(embeddings, attention_matrices)
